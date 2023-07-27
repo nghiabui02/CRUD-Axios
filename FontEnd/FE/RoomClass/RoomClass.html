@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+</head>
+<body>
+<div id="display"></div>
+<hr>
+<h1>ADD</h1>
+<input type="text" id="name">
+<input type="text" id="headMaster">
+<input type="text" id="studentAmount">
+<button onclick="save()">SAVE</button>
+<h1>EDIT</h1>
+<input type="hidden" id="id1" name="id">
+<input type="text" id="name1" name="name">
+<input type="text" id="headMaster1" name="headMaster">
+<input type="text" id="studentAmount1" name="studentAmount">
+<button onclick="update()">SAVE</button>
+<script>
+  let API = 'http://localhost:3000/roomClass'
+  load()
+  function load(){
+    axios.get(API).then((res)=>{
+      console.log(res)
+      let str = '';
+      let data = res.data;
+      data.map(item =>{
+        str += `<h1>${item.id}: ${item.name}; ${item.headMaster}; ${item.studentAmount}</h1>
+<button onclick="delete1(${item.id})">DELETE</button>
+<button onclick="edit(${item.id})">EDIT</button>`
+      })
+      document.getElementById('display').innerHTML = str
+    })
+  }
+  function save(){
+    let data = {
+      name: document.getElementById('name').value,
+      headMaster: document.getElementById('headMaster').value,
+      studentAmount: document.getElementById('studentAmount').value,
+    }
+    axios.post(API, data).then(res =>{
+      console.log(res)
+      axios.get(API).then((res)=>{
+        load()
+      })
+    })
+  }
+  function delete1(id){
+    axios.delete(API + `/${id}`).then(res =>{
+      console.log(res)
+      load()
+    })
+            .catch(e => {
+              console.log(e)
+            })
+  }
+  function edit(id){
+    axios.get(API + '/' + id).then(res =>{
+      let data = res.data[0];
+      console.log(res.data)
+      document.getElementById('id1').value = data.id
+      document.getElementById('name1').value = data.name
+      document.getElementById('headMaster1').value = data.headMaster
+      document.getElementById('studentAmount1').value = data.studentAmount
+    })
+  }
+  function update(){
+    let data = {
+      id: document.getElementById('id1').value,
+      name: document.getElementById('name1').value,
+      headMaster: document.getElementById('headMaster1').value,
+      studentAmount: document.getElementById('studentAmount1').value,
+    }
+    axios.put(API + '/' + data.id, data).then((res)=>{
+      console.log(res)
+      axios.get(API).then((res)=>{
+        load()
+      })
+    })
+  }
+</script>
+</body>
+</html>

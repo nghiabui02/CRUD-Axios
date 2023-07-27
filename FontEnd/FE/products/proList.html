@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+</head>
+<body>
+<div id="display"></div>
+<hr>
+<h1>ADD</h1>
+<input type="text" id="name">
+<input type="text" id="age">
+<input type="text" id="score">
+<button onclick="save()">SAVE</button>
+<h1>EDIT</h1>
+<input type="hidden" id="id1" name="id">
+<input type="text" id="name1" name="name">
+<input type="text" id="age1" name="age">
+<input type="text" id="score1" name="score">
+<button onclick="update()">SAVE</button>
+<script>
+    let API = 'http://localhost:3000/products'
+    let APA = 'http://localhost:3000/students'
+    load()
+    function load(){
+        axios.get(API).then((res)=>{
+            console.log(res)
+            let str = '';
+            let data = res.data;
+            data.map(item =>{
+                console.log(str)
+                str += `<h1>${item.id}: ${item.name}; ${item.price};<img src="${item.image}">; ${item.category.name}</h1>
+<button onclick="delete1(${item.id})">DELETE</button>
+<button onclick="edit(${item.id})">EDIT</button>`
+            })
+            document.getElementById('display').innerHTML = str
+        })
+    }
+
+</script>
+</body>
+</html>
